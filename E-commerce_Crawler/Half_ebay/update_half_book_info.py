@@ -432,16 +432,16 @@ def send_email(infofile):
     msg.attach(att1)
     # 加邮件头
     # to_list=['liz0505@starmerx.com','lujuan@starmerx.com','lily@starmerx.com','jiping@starmerx.com']#发送给相关人员
-    to_list=['miaomiao@starmerx.com','linlin@starmerx.com','zhaolei@starmerx.com']
+    to_list=['']
     # to_list=['3394722605@qq.com']
     msg['to'] = ';'.join(to_list)
-    msg['from'] = 'hengwei@starmerx.com'
+    msg['from'] = 'user@starmerx.com'
     msg['subject'] = 'half.com价格自动更新 part_8'
     # 发送邮件
     try:
         server = smtplib.SMTP()
         server.connect('smtp.exmail.qq.com')
-        server.login('hengwei@starmerx.com','Lianyu2016')#XXX为用户名，XXXXX为密码
+        server.login('user@starmerx.com','pwd')#XXX为用户名，XXXXX为密码
         server.sendmail(msg['from'], to_list,msg.as_string())
         print ('发送成功',infofile)
     except Exception as e:

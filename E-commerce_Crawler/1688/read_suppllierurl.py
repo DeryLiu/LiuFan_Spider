@@ -8,8 +8,8 @@ driver.get('https://login.taobao.com/member/login.jhtml?style=b2b&css_style=b2b&
 # login TaoBaomn
 driver.find_element_by_id("TPL_username_1").clear()
 driver.find_element_by_id("TPL_password_1").clear()
-driver.find_element_by_id("TPL_username_1").send_keys('hengwei@starmerx.com')
-driver.find_element_by_id("TPL_password_1").send_keys('tianhu2016')
+driver.find_element_by_id("TPL_username_1").send_keys('user@starmerx.com')
+driver.find_element_by_id("TPL_password_1").send_keys('pws')
 
 driver.find_element_by_id("J_SubmitStatic").click()
 

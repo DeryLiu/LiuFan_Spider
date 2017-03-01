@@ -23,15 +23,15 @@ def send_asin_email(file):
     #加邮件头
     #to_list=['liz0505@starmerx.com','lujuan@starmerx.com','lily@starmerx.com','jiping@starmerx.com']#发送给相关人员
     #     to_list=['3394722605@qq.com','miaomiao@starmerx.com','zhaolei@starmerx.com']
-    to_list=['hengwei@starmerx.com']
+    to_list=['user']
     msg['to'] = ';'.join(to_list)
-    msg['from'] = 'hengwei@starmerx.com'
+    msg['from'] = 'user'
     msg['subject'] = 'half新数据'
     #发送邮件
     try:
         server = smtplib.SMTP()
         server.connect('smtp.exmail.qq.com')
-        server.login('hengwei@starmerx.com','Lianyu2016')#XXX为用户名，XXXXX为密码
+        server.login('user','pwd')#XXX为用户名，XXXXX为密码
         server.sendmail(msg['from'], to_list,msg.as_string())
         print ('发送成功','./info/onshelf_info.csv')
     except Exception as e:

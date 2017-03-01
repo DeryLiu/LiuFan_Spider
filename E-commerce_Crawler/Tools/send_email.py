@@ -13,13 +13,13 @@ def send_email(infofile):
     msg.attach(att1)
     to_list=['hengwei@starmerx.com','chengli@starmerx.com','zhaolei@starmerx.com']
     msg['to'] = ';'.join(to_list)
-    msg['from'] = 'hengwei@starmerx.com'
+    msg['from'] = 'user@starmerx.com'
     msg['subject'] = 'bestbuy店铺信息'
     #发送邮件
     try:
         server = smtplib.SMTP()
         server.connect('smtp.exmail.qq.com')
-        server.login('hengwei@starmerx.com','Lianyu2016')#XXX为用户名，XXXXX为密码
+        server.login('user@starmerx.com','pwd')#XXX为用户名，XXXXX为密码
         server.sendmail(msg['from'], to_list,msg.as_string())
         print ('发送成功',infofile)
     except Exception as e:

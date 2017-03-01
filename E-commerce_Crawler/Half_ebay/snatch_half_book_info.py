@@ -379,15 +379,15 @@ def send_email(infofile):
     #加邮件头
     #to_list=['liz0505@starmerx.com','lujuan@starmerx.com','lily@starmerx.com','jiping@starmerx.com']#发送给相关人员
     # to_list=['hengwei@starmerx.com','miaomiao@starmerx.com','zhaolei@starmerx.com']
-    to_list=['hengwei@starmerx.com','1955725903@qq.com']
+    to_list=['user@starmerx.com']
     msg['to'] = ';'.join(to_list)
-    msg['from'] = 'hengwei@starmerx.com'
+    msg['from'] = 'user@starmerx.com'
     msg['subject'] = 'half新抓Part8'
     #发送邮件
     try:
         server = smtplib.SMTP()
         server.connect('smtp.exmail.qq.com')
-        server.login('hengwei@starmerx.com','Lianyu2016')#XXX为用户名，XXXXX为密码
+        server.login('user@starmerx.com','pwd')#XXX为用户名，XXXXX为密码
         server.sendmail(msg['from'], to_list,msg.as_string())
         print ('发送成功',infofile)
     except Exception as e:
