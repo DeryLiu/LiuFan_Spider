@@ -1,0 +1,70 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    进度 - 任务管理 - 面板
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css"/>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'dashboard/js/task_progress.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'dashboard' %}">面板</a></li>
+    <li><a href="{% url 'task' %}">任务管理</a></li>
+    <li>{{ task }}</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center active" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    <input type="hidden" class="invisible" id="progressJsonUrl" value="{% url 'task_progress_json' task.pk %}" />
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>品类</th>
+            <th>进度</th>
+            <th>成功</th>
+            <th>失败</th>
+            <th>总数</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}

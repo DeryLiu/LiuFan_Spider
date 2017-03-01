@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0" />
+    <title>{% block title %}Dashboard layout{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/media/lib/jquery-dialogs/css/jquery.alertable.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/dashboard.css' %}">
+    {% block css %}{% endblock %}
+</head>
+    <body>
+    <div class="container">
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">爬虫管理系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" id="dropdownUser" data-toggle="dropdown">{{ user.username }} <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownUser">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">修改密码</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">用户信息</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'logout' %}">退出登陆</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+        <ol class="breadcrumb">
+            {% block breadcrumb %}
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Library</a></li>
+              <li class="active">Data</li>
+            {% endblock %}
+        </ol>
+        <div class="row">
+            <div class="col-sm-4 col-md-3">
+                {% block left %}{% endblock %}
+            </div>
+            <div class="col-sm-8 col-md-9">
+                <div class="panel panel-box">
+                    <div class="panel-body">
+                        {% block right %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block bottom %}{% endblock %}
+    <script src="/media/lib/jquery-3.1.1.min.js"></script>
+    <script src="/media/lib/jquery-dialogs/js/velocity.min.js"></script>
+    <script src="/media/lib/jquery-dialogs/js/velocity.ui.min.js"></script>
+    <script src="/media/lib/jquery-dialogs/js/jquery.alertable.min.js"></script>
+    <script src="/media/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>

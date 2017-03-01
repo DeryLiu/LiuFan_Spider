@@ -1,0 +1,76 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    面板
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="active">面板</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center active" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    {% for site in sites %}
+        <div class="well well-box">
+            <h3 class="site-title"><a href="{{ site.url }}" target="_blank">{{ site.name }}</a></h3>
+            <div class="row">
+                <div class="col-xs-6 col-md-4">
+                    <p class="text-left">一级分类：{{ site.level_one_count }}</p>
+                    <p class="text-left">叶子分类：{{ site.level_leaf_count }}</p>
+                    <p class="text-left">产品数量：{{ site.product_count }}</p>
+                </div>
+                <div class="col-xs-6 col-md-4">
+                    <p>今日新增：{{ site.today_add }}</p>
+                    <p>今日更新：{{ site.today_update }}</p>
+                    <p>今日下架：{{ site.today_off }}</p>
+                </div>
+                <div class="col-xs-4 visible-md visible-lg">
+                    <div class="img-box center-block">
+                        {% if site.logo %}
+                            <img src="{{ site.logo.url }}" class="img-responsive"/>
+                        {% else %}
+                            <img src="{% static 'dashboard/images/no_logo.jpg' %}" class="img-responsive"/>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="header">
+            <h1>请新增站点</h1>
+        </div>
+    {% endfor %}
+{% endblock %}

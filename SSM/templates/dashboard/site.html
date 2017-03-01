@@ -1,0 +1,225 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    站点管理 - 面板
+{% endblock %}
+
+{% block css %}
+    {#    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css"/>#}
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-fileinput/css/fileinput.min.css"/>
+{% endblock %}
+
+{% block js %}
+    <script src="/media/lib/bootstrap-fileinput/js/plugins/canvas-to-blob.min.js"></script>
+    <script src="/media/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script src="/media/lib/bootstrap-fileinput/js/locales/zh.js"></script>
+    <script src="{% static 'dashboard/js/site.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'dashboard' %}">面板</a></li>
+    <li>站点管理</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center active" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    {% for key, value in errors.items %}
+        <div class="alert alert-warning alert-dismissible fade in">
+            <a class="close" data-dismiss="alert">&times;</a>
+            <h4>{{ key }}</h4>
+            <ul>
+                <li class="divider"></li>
+                {% for m in value %}
+                    <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+    <div class="btn-box">
+        <input class="btn btn-sm btn-danger btn-bulk-remove-site" disabled type="button" value="批量删除"
+               data-href-site-remove="{% url 'site_remove' %}">
+        <input class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#addSiteModal" value="新增">
+    </div>
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th><input class="chk-all" type="checkbox" title="全选"/></th>
+            <th>站点</th>
+            <th>爬虫</th>
+            <th>产品</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr>
+                <td><input class="chk-item" type="checkbox" title="选择" data-site-name="{{ site.name }}"/></td>
+                <td>{{ site.name }}</td>
+                <td>{{ site.spider_class }}</td>
+                <td>{{ site.get_products.count }}</td>
+                <td>
+{#                    {% if site.category_set.count == 0 %}#}
+                        {% if site.status == 'pending' %}
+                        <a class="btn btn-success btn-xs btn-init-site disabled" disabled role="button">初始化中</a>
+                        {% else %}
+                        <a class="btn btn-success btn-xs btn-init-site" role="button"
+                           data-init-href="{% url 'init_site_category' site.pk %}">初始化</a>
+                        {% endif %}
+{#                    {% else %}#}
+                        <a class="btn btn-danger btn-xs btn-remove-site" role="button"
+                           data-site-name="{{ site.name }}">删除</a>
+                        <a class="btn btn-warning btn-xs btn-update-site" role="button" data-toggle="modal"
+                           data-target="#updateSiteModal" data-site-id="{{ site.id }}" data-site-name="{{ site.name }}"
+                           data-site-url="{{ site.url }}" data-site-spider-class="{{ site.spider_class }}"
+                           data-site-logo="{{ site.logo }}">修改</a>
+                        <a class="btn btn-info btn-xs" role="button" href="{% url 'site_product' site.id %}">查看</a>
+{#                    {% endif %}#}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block bottom %}
+    <!--添加站点模态对话框-->
+    <div class="modal fade" id="addSiteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">添加站点</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="siteAddForm" action="{% url 'site' %}" method="post"
+                          enctype="multipart/form-data">{% csrf_token %}
+                        <input type="hidden" class="invisible" value='{{ form.errors }}'/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteAddName">站点</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="siteAddName" name="name"
+                                       placeholder="eg: ebay" data-toggle="popover" data-content="请输入站点名称"
+                                       data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteAddUrl">网址</label>
+                            <div class="col-sm-10">
+                                <input type="url" class="form-control" id="siteAddUrl" name="url"
+                                       placeholder="eg: http://www.ebay.com" data-toggle="popover"
+                                       data-content="请输入站点链接" data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteAddSpiderClass">爬虫</label>
+                            <div class="col-sm-10">
+                                <select id="siteAddSpiderClass" name="spider_class" class="form-control selectpicker show-menu-arrow show-tick" data-content="请选择爬虫" data-placement="top">
+                                    <option></option>
+                                    <option value="ebay">Ebay Spider</option>
+{#                                    <option value="amazon">Amazon Spider</option>#}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteAddLogo">Logo</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control file-loading" id="siteAddLogo" name="logo">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnAddSite">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <!--修改站点模态对话框-->
+    <div class="modal fade" id="updateSiteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改站点</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="siteUpdateForm" action="{% url 'site_update' %}"
+                          method="post"
+                          enctype="multipart/form-data">{% csrf_token %}
+                        <input type="hidden" class="invisible" value='{{ form.errors }}'/>
+                        <input type="hidden" class="invisible" name="id" id="siteUpdateId">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteUpdateName">站点</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="siteUpdateName" name="name"
+                                       placeholder="eg: ebay" data-toggle="popover" data-content="请输入站点名称"
+                                       data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteUpdateUrl">网址</label>
+                            <div class="col-sm-10">
+                                <input type="url" class="form-control" id="siteUpdateUrl" name="url"
+                                       placeholder="eg: http://www.ebay.com" data-toggle="popover"
+                                       data-content="请输入站点链接" data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteUpdateSpiderClass">爬虫</label>
+                            <div class="col-sm-10">
+                                <input type="url" class="form-control" id="siteUpdateSpiderClass" name="spider_class"
+                                       placeholder="eg: EbaySpider" data-toggle="popover"
+                                       data-content="请输入爬虫类名" data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="siteUpdateLogo">Logo</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control file-loading" id="siteUpdateLogo" name="logo">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnUpdateSite">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}

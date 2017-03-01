@@ -1,0 +1,119 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    站点管理 - 面板
+{% endblock %}
+
+{% block css %}
+{#    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css"/>#}
+    <link rel="stylesheet" type="text/css" href="/media/lib/ztree_v3/css/zTreeStyle/zTreeStyle.css"/>
+{% endblock %}
+
+{% block js %}
+    <script src="/media/lib/ztree_v3/js/jquery.ztree.core.min.js"></script>
+    <script src="/media/lib/ztree_v3/js/jquery.ztree.excheck.min.js"></script>
+    <script src="{% static 'dashboard/js/product.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'dashboard' %}">面板</a></li>
+    <li><a href="{% url 'site' %}">站点管理</a></li>
+    <li class="active">Ebay</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center active" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    <div>
+        <div class="col-sm-3">
+            <div class="panel panel-info panel-tree">
+                <input type="hidden" id="topCategoryUrl" value="{% url 'site_category_json' site.pk %}">
+                <input type="hidden" id="categoryProductsUrl" value="{% url 'site_category_product_json' %}">
+                <div class="panel-heading">
+                    <strong>{{ site.name }}</strong>
+                    {% csrf_token %}
+                    <input type="button" class="btn btn-success btn-xs pull-right"
+                           id="btn_update" value="更新" data-update-url="{% url 'update_category' %}">
+                </div>
+                <div class="panel-body">
+                    <ul id="categoryTree" class="ztree"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="btn-box">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="keyword" placeholder="eg: baby">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" id="searchButton" type="button">搜索</button>
+                    </span>
+                </div>
+            </div>
+            <table class="table table-hover table-bordered table-striped" id="productTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>品类</th>
+                    <th>服务器</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{{ product.server }}</td>
+                        <td>{{ product.get_status }}</td>
+                        <td>
+                            <a class="btn btn-danger btn-xs" role="button" href="{% url 'site_product_remove' product.id %}">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pager">
+                    <li class="previous col-sm-3 disabled"><a class="pager-item" data-page=""><span class="glyphicon glyphicon-chevron-left"></span> <span class="visible-xs-inline visible-lg-inline">上一页</span></a></li>
+                    <li class="col-sm-6"><h5>总计：<span id="totalPage">{{ total }}</span>页 当前第<span id="currentPage">1</span>页 <span id="keywordInfo"></span></h5></li>
+                    <li class="next col-sm-3{% if total == 1 %} disabled{% endif %}"><a class="pager-item" data-page="2"><span class="visible-xs-inline visible-lg-inline">下一页</span> <span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}

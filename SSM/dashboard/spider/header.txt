@@ -1,0 +1,3 @@
+# 设置请求头，每行一条，逗号分隔
+Host,www.ebay.com
+Referer,http://www.ebay.com

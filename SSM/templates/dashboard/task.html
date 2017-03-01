@@ -1,0 +1,199 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    任务管理 - 面板
+{% endblock %}
+
+{% block css %}
+{#    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css"/>#}
+    <link rel="stylesheet" type="text/css" href="/media/lib/ztree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+{% endblock %}
+
+{% block js %}
+    <script src="/media/lib/ztree_v3/js/jquery.ztree.core.min.js"></script>
+    <script src="/media/lib/ztree_v3/js/jquery.ztree.excheck.min.js"></script>
+    <script src="/media/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/media/lib/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="{% static 'dashboard/js/task.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'dashboard' %}">面板</a></li>
+    <li>任务管理</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center active" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    {% for key, value in errors.items %}
+        <div class="alert alert-warning alert-dismissible fade in">
+            <a class="close" data-dismiss="alert">&times;</a>
+            <h4>{{ key }}</h4>
+            <ul>
+                <li class="divider"></li>
+                {% for m in value %}
+                    <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+    <div class="btn-box">
+        <input class="btn btn-sm btn-danger btn-bulk-remove-task" disabled type="button" value="批量删除"
+               data-toggle="modal" data-target="#removeTaskModal" data-task-remove-url="{% url 'task_remove' %}">
+        <input class="btn btn-sm btn-primary btn-add-task" type="button" data-toggle="modal" data-target="#taskModal" value="新增">
+    </div>
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th><input class="chk-all" type="checkbox" title="全选"/></th>
+            <th>名称</th>
+            <th>站点</th>
+            <th>类型</th>
+            <th>周期</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td><input class="chk-item" type="checkbox" title="选择" data-task-name="{{ task.name }}"/></td>
+                <td>{{ task.name }}</td>
+                <td>{{ task.site }}</td>
+                <td>{{ task.get_task_type_display }}</td>
+                <td>{{ task.get_rate_display }}</td>
+                <td>
+                    {% if task.status == 'done' %}
+                        <a class="btn btn-success btn-xs btn-start-task" role="button"
+                           data-task-start-url="{% url 'start_task' task.id %}">启动</a>
+                    {% else %}
+                        <a class="btn btn-success btn-xs disabled" role="button" disabled>已启动</a>
+                    {% endif %}
+                    <a class="btn btn-danger btn-xs btn-delete" role="button" data-task-name="{{ task.name }}">删除</a>
+                    <a class="btn btn-warning btn-xs btn-update-task" role="button" data-toggle="modal"
+                       data-target="#taskModal" data-task-id="{{ task.pk }}" data-task-name="{{ task.name }}"
+                       data-task-site="{{ task.site.pk }}" data-task-start_time="{{ task.start_time }}"
+                       data-task-task_type="{{ task.task_type }}" data-task-rate="{{ task.rate }}"
+                       data-task-category-keys="{{ task.category_keys }}" data-task-category-names="{{ task.category_names }}">修改</a>
+
+{#                    {% if task.status != 'done' %}#}
+                        <a class="btn btn-info btn-xs" role="button" href="{% url 'task_progress' task.pk %}">查看</a>
+{#                    {% endif %}#}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block bottom %}
+    <!--添加/修改任务模态对话框-->
+    <div class="modal fade" id="taskModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="taskForm" action="{% url 'task' %}" method="post"
+                          enctype="multipart/form-data">{% csrf_token %}
+                        <input type="hidden" class="invisible" value='{{ form.errors }}'/>
+                        <input type="hidden" class="invisible" id="taskId" name="taskId" value="">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskName">名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="taskName" name="name"
+                                       placeholder="eg: ebay爬虫" data-toggle="popover" data-content="请输入任务名称"
+                                       data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskSite">站点</label>
+                            <div class="col-sm-10">
+                                <select id="taskSite" name="site" class="form-control" data-content="请选择站点" data-placement="top">
+                                    <option></option>
+                                    {% for site in sites %}
+                                        <option value="{{ site.id }}" data-category-json-url="{% url 'site_category_json' site.id %}">{{ site.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskRate">周期</label>
+                            <div class="col-sm-10">
+                                <select id="taskRate" name="rate" class="form-control">
+                                    <option value="o">一次</option>
+{#                                    <option value="d">每天</option>#}
+{#                                    <option value="w">每周</option>#}
+{#                                    <option value="m">每月</option>#}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskStartTime">开始时间</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="taskStartTime" name="start_time"
+                                       data-toggle="popover" data-content="请选择开始时间" data-placement="top">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskShowCategory">叶子品类</label>
+                            <div class="col-sm-10">
+                                <input type="hidden" class="invisible" id="taskCategory" name="category_keys">
+                                <input type="text" class="form-control" id="taskShowCategory" name="category_names"
+                                       data-toggle="popover" data-content="请选择品类" data-placement="top">
+                                <div>
+                                    <ul id="categoryTree" class="ztree"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="taskTaskType">任务类型</label>
+                            <div class="col-sm-10">
+                                <select id="taskTaskType" name="task_type" class="form-control">
+                                    <option value="crawl">抓取</option>
+                                    <option value="update">更新</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnSubmitTask">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}

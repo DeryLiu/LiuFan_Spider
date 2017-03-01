@@ -1,0 +1,32 @@
+ul li {
+    list-style: none;
+}
+.navbar {
+    margin-top: 20px;
+}
+.panel-box {
+    /*min-height: 600px;*/
+    border: solid 1px #c5c5c5;
+}
+
+.well-box {
+    background-color: #eee;
+}
+
+.site-title {
+    margin-bottom: 20px;
+}
+
+.well-box div.row div p {
+    margin-top: 24px;
+}
+
+.img-box {
+    padding: 10px;
+    width: 150px;
+    background-color: #b9def0;
+}
+
+.btn-box {
+    margin-bottom: 11px;
+}

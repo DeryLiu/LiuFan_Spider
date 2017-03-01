@@ -1,0 +1,86 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block title %}
+    报表 - 面板
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/lib/bootstrap-select/css/bootstrap-select.min.css"/>
+{% endblock %}
+
+{% block js %}
+    <script src="/media/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'dashboard' %}">面板</a></li>
+    <li>报表</li>
+{% endblock %}
+
+{% block left %}
+    <nav class="navbar navbar-default" role="navigation" style="margin-top: 0;">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header visible-xs">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#menu-collapse-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">菜单</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="menu-collapse-2" style="padding: 0;">
+                <div class="nav">
+                    <a class="list-group-item text-center" href="{% url 'dashboard' %}">面板</a>
+                    <a class="list-group-item text-center" href="{% url 'site' %}">站点管理</a>
+                    <a class="list-group-item text-center" href="{% url 'task' %}">任务管理</a>
+                    <a class="list-group-item text-center" href="#">用户管理</a>
+                    <a class="list-group-item text-center" href="#">日志管理</a>
+                    <a class="list-group-item text-center active" href="{% url 'statistics' %}">报表</a>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block right %}
+    <div class="btn-group pull-right">
+        <a class="btn btn-primary{% if day == 'today' %} active{% endif %}" href="{% url 'statistics_with_day' 'today' %}">今天</a>
+        <a class="btn btn-primary{% if day == 'this_week' %} active{% endif %}" href="{% url 'statistics_with_day' 'this_week' %}">本周</a>
+        <a class="btn btn-primary{% if day == 'this_month' %} active{% endif %}" href="{% url 'statistics_with_day' 'this_month' %}">本月</a>
+    </div>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>站点</th>
+            <th>分类</th>
+            <th>产品</th>
+            <th>新增</th>
+            <th>更新</th>
+            <th>下架</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr>
+            <td>{{ site.name }}</td>
+            <td>{{ site.category_count }}</td>
+            <td>{{ site.product_count }}</td>
+            <td>{{ site.new_count }}</td>
+            <td>{{ site.update_count }}</td>
+            <td>{{ site.off_count }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}
