@@ -1,0 +1,21 @@
+[INFO  - 2017-03-09T01:42:12.228Z] GhostDriver - Main - running on port 65041
+[INFO  - 2017-03-09T01:42:12.632Z] Session [9df53720-0469-11e7-a4e0-49921c03c70d] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2017-03-09T01:42:12.632Z] Session [9df53720-0469-11e7-a4e0-49921c03c70d] - page.customHeaders:  - {}
+[INFO  - 2017-03-09T01:42:12.632Z] Session [9df53720-0469-11e7-a4e0-49921c03c70d] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"mac-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-03-09T01:42:12.632Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 9df53720-0469-11e7-a4e0-49921c03c70d
+[ERROR - 2017-03-09T01:42:26.338Z] Session [9df53720-0469-11e7-a4e0-49921c03c70d] - page.onError - msg: ReferenceError: Can't find variable: login
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-03-09T01:42:26.338Z] Session [9df53720-0469-11e7-a4e0-49921c03c70d] - page.onError - stack:
+  onclick (http://pass.buildnet.cn/auth/greennkit:124)
+  dispatchEvent (:0)
+  U (:119)
+  $ (:108)
+  $ (:101)
+  gh (:141)
+  sh (:152)
+  (anonymous function) (:152)
+  (anonymous function) (:152)
+  (anonymous function) (:153)
+
+  phantomjs://platform/console++.js:263 in error
