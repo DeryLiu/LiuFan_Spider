@@ -1,0 +1,7 @@
+pymongo
+requests
+requesocks
+gevent
+jieba
+wordcloud
+Pillow
